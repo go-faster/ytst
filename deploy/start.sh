@@ -12,7 +12,7 @@ echo ">> Cilium"
 kubectl create ns cilium
 cilium install --version 1.14.5 -n cilium --set bpf.autoMount.enabled=false
 cilium hubble enable -n cilium
-cilium -n  cilium status --wait
+cilium -n cilium status --wait
 
 echo ">> OpenEBS"
 helm install openebs --namespace openebs openebs/openebs --create-namespace
