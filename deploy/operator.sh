@@ -3,7 +3,8 @@
 set -e
 
 TAG="dev-$(date +%s)"
-IMG="${IMG:-ghcr.io/go-faster/ytop}"
+# TODO(ernado): replace with ghcr.io
+IMG="${IMG:-registry.ernado.me/ytop}"
 NS=ytop
 NAME=op
 
