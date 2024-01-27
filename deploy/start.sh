@@ -29,4 +29,4 @@ echo ">> Operator"
 
 echo ">> YTsaurus"
 kubectl create ns yt
-kubectl apply -n yt -f cluster_v1_minikube.yaml
+kubectl apply -n yt -f yt.yml
