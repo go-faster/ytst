@@ -1,8 +1,10 @@
 #!/bin/bash
 
 source yt.sh
+VER=22.04
+IMG=ubuntu-base-${VER}-base-amd64.tar.gz
 
 echo ">> Loading base layer"
-IMG=ubuntu-base-22.04-base-amd64.tar.gz
+wget -O ${IMG} -nc https://cdimage.ubuntu.com/ubuntu-base/releases/${VER}/release/${IMG}
 LAYER=//${IMG}
 yt write-file ${LAYER} < ${IMG}
