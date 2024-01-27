@@ -2,8 +2,8 @@
 
 set -e
 
-TAG=0.0.0
-IMG=registry.ernado.me/ytop
+TAG="dev-$(date +%s)"
+IMG="${IMG:-ghcr.io/go-faster/ytop}"
 NS=ytop
 NAME=op
 
