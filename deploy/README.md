@@ -14,6 +14,17 @@ Deployment scripts and files.
 - go
 - yt cli
 
+## Preparing
+
+Clone repositories:
+
+```bash
+git clone https://github.com/go-faster/portoshim.git
+git clone https://github.com/go-faster/porto
+git clone https://github.com/go-faster/ytst.git
+git clone --branch feat/layer-location https://github.com/go-faster/yt-k8s-operator.git
+```
+
 ## Running
 
 First, start the cluster:
