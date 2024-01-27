@@ -19,10 +19,9 @@ Deployment scripts and files.
 Clone repositories:
 
 ```bash
-git clone https://github.com/go-faster/portoshim.git
-git clone https://github.com/go-faster/porto
 git clone https://github.com/go-faster/ytst.git
-git clone --branch feat/layer-location https://github.com/go-faster/yt-k8s-operator.git
+cd ytst/deploy
+git submodule update --init --recursive
 ```
 
 ## Running

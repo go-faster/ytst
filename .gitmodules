@@ -1,0 +1,10 @@
+[submodule "deploy/porto"]
+	path = deploy/porto
+	url = ../porto
+[submodule "deploy/portoshim"]
+	path = deploy/portoshim
+	url = ../portoshim
+[submodule "deploy/yt-k8s-operator"]
+	path = deploy/yt-k8s-operator
+	url = ../yt-k8s-operator
+	branch = feat/layer-location
