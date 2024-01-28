@@ -2,35 +2,61 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"net/http"
 	"time"
 )
 
-func tick() error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://google.com", http.NoBody)
-	if err != nil {
-		return err
-	}
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	log.Println(req.Method, req.URL, res.Status)
-	return res.Body.Close()
-}
-
 func main() {
-	if err := tick(); err != nil {
-		log.Printf("err: %v", err)
+	var arg struct {
+		URL      string
+		Rate     time.Duration
+		Timeout  time.Duration
+		Duration time.Duration
+		Fail     bool
 	}
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
-	for range ticker.C {
-		if err := tick(); err != nil {
+	flag.StringVar(&arg.URL, "url", "https://google.com", "url to request")
+	flag.DurationVar(&arg.Rate, "rate", time.Second, "request rate")
+	flag.DurationVar(&arg.Timeout, "timeout", 5*time.Second, "request timeout")
+	flag.BoolVar(&arg.Fail, "fail", false, "fail on first error")
+	flag.DurationVar(&arg.Duration, "duration", time.Minute*2, "duration to run")
+	flag.Parse()
+	handle := func(err error) {
+		if err == nil {
+			return
+		}
+		if arg.Fail {
+			log.Fatalf("err: %v", err)
+		} else {
 			log.Printf("err: %v", err)
+		}
+	}
+	tick := func() error {
+		ctx, cancel := context.WithTimeout(context.Background(), arg.Timeout)
+		defer cancel()
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, arg.URL, http.NoBody)
+		if err != nil {
+			return err
+		}
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
+		log.Println(req.Method, req.URL, res.Status)
+		return res.Body.Close()
+	}
+	until := time.After(arg.Duration)
+	handle(tick())
+	ticker := time.NewTicker(arg.Rate)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-until:
+			log.Println("done")
+			return
+		case <-ticker.C:
+			handle(tick())
 		}
 	}
 }
