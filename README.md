@@ -70,7 +70,9 @@ make minikube-darwin-amd64 minikube-darwin-arm64 minikube-linux-amd64
 ### Running
 
 > [!WARNING]
-> Currently fails at `Verifying Kubernetes components...`. See https://github.com/go-faster/portoshim/issues/4
+> Currently fails at `Verifying Kubernetes components...`.
+> - https://github.com/go-faster/portoshim/issues/4
+> - https://github.com/go-faster/portoshim/issues/3
 
 ```bash
 ./minikube.sh
