@@ -28,9 +28,8 @@ func main() {
 		}
 		if arg.Fail {
 			log.Fatalf("err: %v", err)
-		} else {
-			log.Printf("err: %v", err)
 		}
+		log.Printf("err: %v", err)
 	}
 	tick := func() error {
 		ctx, cancel := context.WithTimeout(context.Background(), arg.Timeout)
