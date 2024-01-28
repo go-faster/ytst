@@ -43,6 +43,10 @@ kubectl -n yt get pods --watch
 ```
 
 Setup and run test:
+
+> [!WARNING]
+> Currently fails with `/bin/bash: line 1: ./yt-http-test: No such file or directory`: [#3](https://github.com/go-faster/ytst/issues/3)
+
 ```bash
 ./yt-setup.sh
 ./yt-test.sh
@@ -70,9 +74,7 @@ make minikube-darwin-amd64 minikube-darwin-arm64 minikube-linux-amd64
 ### Running
 
 > [!WARNING]
-> Currently fails at `Verifying Kubernetes components...`.
-> - https://github.com/go-faster/portoshim/issues/4
-> - https://github.com/go-faster/portoshim/issues/3
+> Currently fails at `Verifying Kubernetes components...`: [#4](https://github.com/go-faster/portoshim/issues/4),[#3](https://github.com/go-faster/portoshim/issues/3)
 
 ```bash
 ./minikube.sh
