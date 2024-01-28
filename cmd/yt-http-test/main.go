@@ -22,8 +22,9 @@ func main() {
 	flag.BoolVar(&arg.Fail, "fail", false, "fail on first error")
 	flag.DurationVar(&arg.Duration, "duration", time.Minute*2, "duration to run")
 	flag.Parse()
+	var ok bool
 	handle := func(err error) {
-		if err == nil {
+		if ok = err == nil; ok {
 			return
 		}
 		if arg.Fail {
@@ -52,6 +53,9 @@ func main() {
 	for {
 		select {
 		case <-until:
+			if !ok {
+				log.Fatalln("failed")
+			}
 			log.Println("done")
 			return
 		case <-ticker.C:
