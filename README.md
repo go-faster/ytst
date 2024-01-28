@@ -2,7 +2,13 @@
 
 Set of tools for testing ytsaurus.
 
-## Requirements
+```bash
+cd deploy
+```
+
+## Running in Kubernetes
+
+### Requirements
 
 - porto
 - portoshim
@@ -14,7 +20,7 @@ Set of tools for testing ytsaurus.
 - go
 - yt cli
 
-## Preparing
+### Preparing
 
 Clone repositories:
 
@@ -24,7 +30,7 @@ cd ytst/deploy
 git submodule update --init --recursive
 ```
 
-## Running
+### Running
 
 First, start the cluster:
 ```bash
@@ -47,8 +53,47 @@ Manually issue yt commands:
 source yt.sh
 ```
 
-## Cleanup
+### Cleanup
 
 ```bash
 ./reset.sh
+```
+
+## Running in Minikube
+
+### Building binary
+
+```bash
+make minikube-darwin-amd64 minikube-darwin-arm64 minikube-linux-amd64
+```
+
+### Running
+
+> [!WARNING]
+> Currently fails at `Verifying Kubernetes components...`. See https://github.com/go-faster/portoshim/issues/4
+
+```bash
+./minikube.sh
+```
+
+### Minikube logs
+
+```bash
+./minikube/out/minikube logs
+```
+
+### Cleanup
+
+```bash
+./minikube/out/minikube delete
+```
+
+### Building image
+
+> [!IMPORTANT]
+> Pretty slow, takes about 30 minutes.
+
+```bash
+cd minikube
+IN_DOCKER=1 make minikube-iso-x86_64
 ```

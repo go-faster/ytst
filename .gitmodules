@@ -8,3 +8,6 @@
 	path = deploy/yt-k8s-operator
 	url = ../yt-k8s-operator
 	branch = feat/layer-location
+[submodule "deploy/minikube"]
+	path = deploy/minikube
+	url = ../minikube
