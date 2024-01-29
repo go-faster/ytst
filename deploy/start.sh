@@ -5,7 +5,7 @@ set -e
 CRI="${CRI:-unix:///run/portoshim.sock}"
 echo ">> Setting k8s on ${CRI}"
 portoctl docker-pull registry.k8s.io/pause:3.7 # https://github.com/go-faster/portoshim/issues/2
-kubeadm init --cri-socket="${CRI}" --skip-phases=addon/kube-proxy
+kubeadm init --cri-socket="${CRI}"
 kubectl taint nodes "$(hostname)" node-role.kubernetes.io/control-plane:NoSchedule-
 
 echo ">> Cilium"
