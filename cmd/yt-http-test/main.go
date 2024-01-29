@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/ncruces/go-dns"
 )
 
 func main() {
@@ -32,6 +34,18 @@ func main() {
 		}
 		log.Printf("err: %v", err)
 	}
+	resolver, err := dns.NewDoHResolver("https://dns.google/dns-query{?dns}",
+		dns.DoHAddresses("8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844"),
+		dns.DoHCache(),
+	)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	client := &http.Client{
+		Transport: &http.Transport{
+			DialContext: resolver.Dial,
+		},
+	}
 	tick := func() error {
 		ctx, cancel := context.WithTimeout(context.Background(), arg.Timeout)
 		defer cancel()
@@ -39,7 +53,7 @@ func main() {
 		if err != nil {
 			return err
 		}
-		res, err := http.DefaultClient.Do(req)
+		res, err := client.Do(req)
 		if err != nil {
 			return err
 		}
