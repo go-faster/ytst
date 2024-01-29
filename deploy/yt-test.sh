@@ -1,7 +1,5 @@
 set -e
 
-source yt.sh
-
 export CGO_ENABLED=0
 go build ../cmd/yt-http-test
 yt write-file '//yt-http-test' < yt-http-test

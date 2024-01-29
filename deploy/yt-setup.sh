@@ -2,7 +2,6 @@
 
 set -e
 
-source yt.sh
 VER=20.04.5
 IMG=ubuntu-base-${VER}-base-amd64.tar.gz
 

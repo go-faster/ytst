@@ -48,13 +48,9 @@ Setup and run test:
 > Currently fails with `/bin/bash: line 1: ./yt-http-test: No such file or directory`: [#3](https://github.com/go-faster/ytst/issues/3)
 
 ```bash
+source yt.sh
 ./yt-setup.sh
 ./yt-test.sh
-```
-
-Manually issue yt commands:
-```bash
-source yt.sh
 ```
 
 ### Cleanup
