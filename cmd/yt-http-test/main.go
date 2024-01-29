@@ -6,27 +6,36 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/netip"
+	"strconv"
 	"time"
-
-	"github.com/ncruces/go-dns"
 )
 
-func newClient() *http.Client {
-	resolver, err := dns.NewDoHResolver("https://dns.google/dns-query{?dns}",
-		dns.DoHAddresses("8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844"),
-		dns.DoHCache(),
-	)
+type staticDialer struct {
+	ip netip.Addr
+}
+
+func (d staticDialer) Dial(_ context.Context, network, address string) (net.Conn, error) {
+	_, strPort, err := net.SplitHostPort(address)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
-	dialer := &net.Dialer{
-		Resolver:  resolver,
-		Timeout:   5 * time.Second,
-		KeepAlive: 1 * time.Minute,
+	port, err := strconv.ParseUint(strPort, 10, 16)
+	if err != nil {
+		return nil, err
+	}
+	return net.Dial(network, netip.AddrPortFrom(d.ip, uint16(port)).String())
+}
+
+func newClient() *http.Client {
+	dialer := staticDialer{
+		// dig example.com
+		// 	example.com.            6585    IN      A       93.184.216.34
+		ip: netip.MustParseAddr("93.184.216.34"),
 	}
 	transport := &http.Transport{
 		Proxy:                 http.ProxyFromEnvironment,
-		DialContext:           dialer.DialContext,
+		DialContext:           dialer.Dial,
 		ForceAttemptHTTP2:     true,
 		MaxIdleConns:          100,
 		IdleConnTimeout:       90 * time.Second,
@@ -41,13 +50,11 @@ func newClient() *http.Client {
 
 func main() {
 	var arg struct {
-		URL      string
 		Rate     time.Duration
 		Timeout  time.Duration
 		Duration time.Duration
 		Fail     bool
 	}
-	flag.StringVar(&arg.URL, "url", "https://google.com", "url to request")
 	flag.DurationVar(&arg.Rate, "rate", time.Second, "request rate")
 	flag.DurationVar(&arg.Timeout, "timeout", 5*time.Second, "request timeout")
 	flag.BoolVar(&arg.Fail, "fail", false, "fail on first error")
@@ -67,7 +74,7 @@ func main() {
 	tick := func() error {
 		ctx, cancel := context.WithTimeout(context.Background(), arg.Timeout)
 		defer cancel()
-		req, err := http.NewRequestWithContext(ctx, http.MethodGet, arg.URL, http.NoBody)
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://example.com", http.NoBody)
 		if err != nil {
 			return err
 		}
