@@ -1,6 +1,6 @@
 # ytst
 
-Set of tools for testing ytsaurus.
+Set of tools for testing ytsaurus with porto and k8s.
 
 ```bash
 cd deploy
