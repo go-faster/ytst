@@ -4,11 +4,40 @@ import (
 	"context"
 	"flag"
 	"log"
+	"net"
 	"net/http"
 	"time"
 
 	"github.com/ncruces/go-dns"
 )
+
+func newClient() *http.Client {
+	resolver, err := dns.NewDoHResolver("https://dns.google/dns-query{?dns}",
+		dns.DoHAddresses("8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844"),
+		dns.DoHCache(),
+	)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	dialer := &net.Dialer{
+		Resolver:  resolver,
+		Timeout:   5 * time.Second,
+		KeepAlive: 1 * time.Minute,
+	}
+	transport := &http.Transport{
+		Proxy:                 http.ProxyFromEnvironment,
+		DialContext:           dialer.DialContext,
+		ForceAttemptHTTP2:     true,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
+	client := &http.Client{
+		Transport: transport,
+	}
+	return client
+}
 
 func main() {
 	var arg struct {
@@ -34,18 +63,7 @@ func main() {
 		}
 		log.Printf("err: %v", err)
 	}
-	resolver, err := dns.NewDoHResolver("https://dns.google/dns-query{?dns}",
-		dns.DoHAddresses("8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844"),
-		dns.DoHCache(),
-	)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	client := &http.Client{
-		Transport: &http.Transport{
-			DialContext: resolver.Dial,
-		},
-	}
+	client := newClient()
 	tick := func() error {
 		ctx, cancel := context.WithTimeout(context.Background(), arg.Timeout)
 		defer cancel()
