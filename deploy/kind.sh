@@ -17,6 +17,6 @@ kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheu
 ./operator.sh
 
 echo ">> YTsaurus"
-SPEC=yt.containerd.yml
+SPEC=yt.master-caches.yml
 kubectl create ns yt
 kubectl apply -n yt -f ${SPEC}
