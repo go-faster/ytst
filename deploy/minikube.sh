@@ -12,4 +12,6 @@ popd
 
 echo ">> Starting"
 ISO="file://$(realpath minikube-amd64.iso)"
-./minikube/out/minikube start --iso-url="${ISO}" --cni=cilium --container-runtime=porto --cache-images=false
+# Set LANG=en for VBoxManage, since VBoxManage output depends on system language
+# and minikube fails to parse translated output.
+LANG=en ./minikube/out/minikube start --iso-url="${ISO}" --cni=cilium --container-runtime=porto --cache-images=false
