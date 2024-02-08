@@ -1,7 +1,7 @@
 set -e
 
 echo ">> Downloading latest minikube image with porto and portoshim"
-VER=v1.32.1-alpha.3
+VER=v1.32.1-alpha.4
 IMG=https://github.com/go-faster/minikube/releases/download/${VER}/minikube-amd64.iso
 wget -N ${IMG} # -N flag enables timestamping and prevents re-downloading the same file
 
