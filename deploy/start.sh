@@ -29,7 +29,6 @@ kubectl -n cert-manager rollout status --timeout=1m deployment cert-manager-webh
 echo ">> Service monitors"
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
 
-echo ">> Operator"
 ./operator.sh
 
 echo ">> YTsaurus"

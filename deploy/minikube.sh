@@ -20,7 +20,7 @@ export LANG=en
 
 echo ">> Cert-Manager"
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
-kubectl -n cert-manager rollout status --timeout=1m deployment cert-manager-webhook
+kubectl -n cert-manager rollout status --timeout=5m deployment cert-manager-webhook
 
 echo ">> Service monitors"
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml

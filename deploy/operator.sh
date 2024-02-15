@@ -14,4 +14,4 @@ make docker-build docker-push OPERATOR_IMAGE="${IMG}" IMG="${IMG}":"${TAG}" OPER
 helm upgrade ${NAME} ./ytop-chart --install --namespace ${NS} --create-namespace --set controllerManager.manager.image.repository="${IMG}" --set controllerManager.manager.image.tag="${TAG}"
 popd
 
-kubectl -n ${NS} rollout status --timeout=1m deployment ${NAME}-ytop-chart-controller-manager
+kubectl -n ${NS} rollout status --timeout=5m deployment ${NAME}-ytop-chart-controller-manager
