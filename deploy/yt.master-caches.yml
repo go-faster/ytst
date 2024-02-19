@@ -17,6 +17,29 @@ spec:
           type: exclude
           values: ["Bus"]
 
+  secondaryMasters:
+    - instanceCount: 1
+      cellTag: 2
+      loggers: *loggers
+      locations:
+        - locationType: MasterChangelogs
+          path: /yt/master-data/master-changelogs
+        - locationType: MasterSnapshots
+          path: /yt/master-data/master-snapshots
+
+      volumeMounts:
+        - name: master-data
+          mountPath: /yt/master-data
+
+      volumeClaimTemplates:
+        - metadata:
+            name: master-data
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 5Gi
+
   primaryMasters:
     instanceCount: 1
     cellTag: 1
