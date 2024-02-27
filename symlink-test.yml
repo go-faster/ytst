@@ -6,10 +6,14 @@ spec:
   containers:
     - name: alma
       image: almalinux:9.2
-      command: [sleep "infinity"]
+      command:
+        - sleep
+        - 'infinity'
       imagePullPolicy: IfNotPresent
     - name: ubuntu
       image: ubuntu:latest
-      command: [sleep "infinity"]
+      command:
+        - sleep
+        - 'infinity'
       imagePullPolicy: IfNotPresent
   restartPolicy: Always
