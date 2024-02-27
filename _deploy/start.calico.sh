@@ -9,7 +9,7 @@ if [[ ${CRI} =~ "porto" ]]; then
   # https://github.com/go-faster/portoshim/issues/2
   portoctl docker-pull registry.k8s.io/pause:3.7
 fi
-kubeadm init --cri-socket="${CRI}" --pod-network-cidr=192.168.0.0/24
+kubeadm init --cri-socket="${CRI}" --pod-network-cidr=10.0.0.0/8
 kubectl taint nodes "$(hostname)" node-role.kubernetes.io/control-plane:NoSchedule-
 
 echo ">> Calico"
