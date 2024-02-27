@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app.kubernetes.io/instance: incluster-auth-test
+    app.kubernetes.io/name: incluster-auth-test
+  name: incluster-auth-test
+spec:
+  selector:
+    matchLabels:
+      app: incluster-auth-test
+      app.kubernetes.io/instance: incluster-auth-test
+      app.kubernetes.io/name: incluster-auth-test
+  template:
+    metadata:
+      labels:
+        app: incluster-auth-test
+        app.kubernetes.io/instance: incluster-auth-test
+        app.kubernetes.io/name: incluster-auth-test
+    spec:
+      containers:
+        - image: ghcr.io/go-faster/ytst/incluster-auth-test:latest
+          imagePullPolicy: Always
+          name: auth-test
+          securityContext:
+            privileged: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+  updateStrategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
