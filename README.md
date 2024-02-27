@@ -3,7 +3,7 @@
 Set of tools for testing ytsaurus with porto and k8s.
 
 ```bash
-cd deploy
+cd _deploy
 ```
 
 ## Running in Kubernetes
@@ -26,7 +26,7 @@ Clone repositories:
 
 ```bash
 git clone https://github.com/go-faster/ytst.git
-cd ytst/deploy
+cd ytst/_deploy
 git submodule update --init --recursive
 ```
 
