@@ -27,7 +27,7 @@ export LANG=en
 echo ">> Deleting old Minikube"
 ./minikube/out/minikube delete
 echo ">> Starting Minikube (iso: $ISO)"
-./minikube/out/minikube start --iso-url="${ISO}" --cni=cilium --container-runtime=porto --cache-images=false
+./minikube/out/minikube start --memory="8g" --cpus=4 --iso-url="${ISO}" --cni=cilium --container-runtime=porto --cache-images=false
 
 echo ">> Cert-Manager"
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
