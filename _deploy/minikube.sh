@@ -9,10 +9,10 @@ if [ -z "$IMG" ]; then
     if [ -x "$GH_BIN" ]; then
         echo ">>> Using gh to get latest minikube image"
         REPO="go-faster/minikube"
-        latest_version=$(gh release view -R "${REPO}" --json name --jq '.name')
-        IMG="minikube-amd64-${latest_version}.iso"
+        version=$(gh release view -R "${REPO}" --json tagName --jq '.tagName')
+        IMG="minikube-amd64-${version}.iso"
         echo ">>> Downloading $IMG"
-        gh release download -R "${REPO}" --skip-existing -O "${IMG}" "${latest_version}"
+        wget --no-clobber "https://ytsaurus.hb.ru-msk.vkcs.cloud/minikube/minikube-amd64-${version}.iso"
     else
         echo ">>> gh command not found"
         exit 1
