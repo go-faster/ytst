@@ -9,8 +9,7 @@ kind create cluster --name ${CLUSTER} --config kind.yml
 
 echo ">> Cilium"
 kubectl create ns cilium
-cilium install --version 1.14.5 -n cilium --set bpf.autoMount.enabled=false
-cilium hubble enable -n cilium
+cilium install --version 1.15.1 -n cilium --values cilium.yml
 cilium -n cilium status --wait
 
 echo ">> Cert-Manager"
@@ -19,6 +18,13 @@ kubectl -n cert-manager rollout status --timeout=1m deployment cert-manager-webh
 
 echo ">> Service monitors"
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+
+echo ">> Istio"
+helm repo add istio https://istio-release.storage.googleapis.com/charts
+helm upgrade --install --namespace istio-system --create-namespace istio-base istio/base
+helm upgrade --install --namespace istio-system istiod istio/istiod --wait
+helm upgrade --install istio-ingressgateway istio/gateway -f istio-gw-values.yml
+kubectl apply -f istio-ingress.yml
 
 ./operator.sh
 

@@ -1,0 +1,76 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: gateway
+  namespace: default
+spec:
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "yt.localhost"
+    - "yt-http.localhost"
+    - "hubble.localhost"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: hubble
+  namespace: default
+spec:
+  hosts:
+  - "hubble.localhost"
+  gateways:
+  - default/gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: hubble-ui.cilium.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: yt-http
+  namespace: default
+spec:
+  hosts:
+  - "yt-http.localhost"
+  gateways:
+  - default/gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: http-proxies-lb.yt.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: yt
+  namespace: default
+spec:
+  hosts:
+  - "yt.localhost"
+  gateways:
+  - default/gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: ytsaurus-ui.yt.svc.cluster.local

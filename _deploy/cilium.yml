@@ -1,0 +1,9 @@
+bpf:
+  autoMount:
+    enabled: false
+hubble:
+  enabled: true
+  ui:
+    enabled: true
+  relay:
+    enabled: true
