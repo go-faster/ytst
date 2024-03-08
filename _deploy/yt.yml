@@ -18,6 +18,29 @@ spec:
           type: exclude
           values: ["Bus"]
 
+  secondaryMasters:
+    - instanceCount: 1
+      cellTag: 2
+      loggers: *loggers
+      locations:
+        - locationType: MasterChangelogs
+          path: /yt/master-data/master-changelogs
+        - locationType: MasterSnapshots
+          path: /yt/master-data/master-snapshots
+
+      volumeMounts:
+        - name: master-data
+          mountPath: /yt/master-data
+
+      volumeClaimTemplates:
+        - metadata:
+            name: master-data
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 5Gi
+
   primaryMasters:
     instanceCount: 1
     cellTag: 1
@@ -41,20 +64,33 @@ spec:
             requests:
               storage: 5Gi
 
+  masterCaches:
+    cellTag: 1
+    loggers: *loggers
+    instanceCount: 1
+    image: ghcr.io/go-faster/ytsaurus:stable-23.1.0-relwithdebinfo
+
   httpProxies:
     - serviceType: NodePort
       loggers: *loggers
       instanceCount: 1
       role: default
+      httpNodePort: 15090
+      transport:
+        httpPort: 8080
+
     - serviceType: NodePort
       loggers: *loggers
       instanceCount: 1
       role: control
+      transport:
+        httpPort: 8080
 
   rpcProxies:
     - instanceCount: 1
       loggers: *loggers
       role: default
+
     - instanceCount: 1
       loggers: *loggers
       role: heavy
@@ -117,6 +153,7 @@ spec:
     image: ytsaurus/ui:stable
     serviceType: NodePort
     instanceCount: 1
+    httpNodePort: 15080
 
   strawberry:
     image: ytsaurus/strawberry:0.0.5
