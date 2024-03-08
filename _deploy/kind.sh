@@ -25,10 +25,12 @@ helm upgrade --install --namespace istio-system --create-namespace istio-base is
 helm upgrade --install --namespace istio-system istiod istio/istiod --wait
 helm upgrade --install istio-ingressgateway istio/gateway -f istio-gw-values.yml
 kubectl apply -f istio-ingress.yml
+kubectl apply -f istio-ingress.yml
 
 ./operator.sh
 
 echo ">> YTsaurus"
 SPEC=yt.yml
 kubectl create ns yt
+kubectl apply -f kind.cnp.yml
 sed 's/usePorto: true/usePorto: false/' ${SPEC} | kubectl apply -n yt -f -

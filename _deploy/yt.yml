@@ -154,6 +154,8 @@ spec:
     serviceType: NodePort
     instanceCount: 1
     httpNodePort: 30080
+    description: "Testing cluster"
+    theme: bluejeans
 
   strawberry:
     image: ytsaurus/strawberry:0.0.5

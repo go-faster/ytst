@@ -1,5 +1,5 @@
 labels:
-  app: yt
+  app: gw
 
 nodeSelector:
   ingress: "true"

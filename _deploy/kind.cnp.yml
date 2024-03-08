@@ -1,0 +1,146 @@
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "egress"
+  namespace: default
+spec:
+  endpointSelector:
+    matchLabels:
+      istio: ingressgateway
+  egress:
+    - toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": istio-system
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": yt
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": cilium
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+            - port: "8081"
+              protocol: TCP
+          rules:
+            http: [{}]
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "dns"
+  namespace: yt
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: Ytsaurus
+  egress:
+    - toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "ui-ingress"
+  namespace: yt
+spec:
+  endpointSelector:
+    matchLabels:
+      "app.kubernetes.io/component": yt-ui
+      "app.kubernetes.io/name": Ytsaurus
+  ingress:
+    - toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+          rules:
+            http: [ { } ]
+      fromEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": default
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "rpc"
+  namespace: yt
+spec:
+  endpointSelector:
+    matchLabels:
+      "app.kubernetes.io/name": Ytsaurus
+  egress:
+    - toPorts:
+        - ports:
+            - port: "9010"
+            - port: "9011"
+            - port: "9012"
+            - port: "9013"
+            - port: "9014"
+  ingress:
+    - toPorts:
+        - ports:
+            - port: "9010"
+            - port: "9011"
+            - port: "9012"
+            - port: "9013"
+            - port: "9014"
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "http-proxy-egress"
+  namespace: yt
+spec:
+  endpointSelector:
+    matchLabels:
+      "app.kubernetes.io/name": Ytsaurus
+  egress:
+    - toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP
+          rules:
+            http: [ { } ]
+      toEndpoints:
+        - matchLabels:
+            "app.kubernetes.io/component": yt-http-proxy
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "http-proxy-ingress"
+  namespace: yt
+spec:
+  endpointSelector:
+    matchLabels:
+      "app.kubernetes.io/name": Ytsaurus
+      "app.kubernetes.io/component": yt-http-proxy
+  ingress:
+    - toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP
+          rules:
+            http: [ { } ]
+      fromEndpoints:
+        - matchLabels:
+            "app.kubernetes.io/name": Ytsaurus
