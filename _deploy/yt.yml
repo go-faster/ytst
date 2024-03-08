@@ -150,10 +150,11 @@ spec:
     loggers: *loggers
 
   ui:
-    image: ytsaurus/ui:stable
+    image: ghcr.io/go-faster/yt-ui:1.16.1
     serviceType: NodePort
     instanceCount: 1
     httpNodePort: 30080
+    proxyPort: 8080
     description: "Testing cluster"
     theme: bluejeans
 
