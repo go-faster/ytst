@@ -75,7 +75,7 @@ spec:
       loggers: *loggers
       instanceCount: 1
       role: default
-      httpNodePort: 15090
+      httpNodePort: 30090
       transport:
         httpPort: 8080
 
@@ -153,7 +153,7 @@ spec:
     image: ytsaurus/ui:stable
     serviceType: NodePort
     instanceCount: 1
-    httpNodePort: 15080
+    httpNodePort: 30080
 
   strawberry:
     image: ytsaurus/strawberry:0.0.5
