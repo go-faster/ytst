@@ -1,17 +1,22 @@
 set -e
 
-echo ">> Downloading latest minikube image with porto and portoshim"
-IMG="minikube-amd64.iso"
-GH_BIN=$(which gh)
-if [ -x "$GH_BIN" ]; then
-    echo ">>> Using gh to get latest minikube image"
-    REPO="go-faster/minikube"
-    latest_version=$(gh release view -R "${REPO}" --json name --jq '.name')
-    IMG="minikube-amd64-${latest_version}.iso"
-    echo ">>> Downloading $IMG"
-    gh release download -R "${REPO}" --skip-existing -O "${IMG}" "${latest_version}"
-else
-    echo ">>> gh command not found"
+IMG=${IMG:"minikube-amd64.iso"}
+
+# if IMG is not set, download the latest minikube image
+if [ -z "$IMG" ]; then
+    echo ">> Downloading latest minikube image"
+    GH_BIN=$(which gh)
+    if [ -x "$GH_BIN" ]; then
+        echo ">>> Using gh to get latest minikube image"
+        REPO="go-faster/minikube"
+        latest_version=$(gh release view -R "${REPO}" --json name --jq '.name')
+        IMG="minikube-amd64-${latest_version}.iso"
+        echo ">>> Downloading $IMG"
+        gh release download -R "${REPO}" --skip-existing -O "${IMG}" "${latest_version}"
+    else
+        echo ">>> gh command not found"
+        exit 1
+    fi
 fi
 
 echo ">> Building Minikube"
@@ -19,7 +24,8 @@ pushd minikube
 make out/minikube
 popd
 
-ISO="file://$(realpath $IMG)"
+ISO_REALPATH=$(realpath "${IMG}")
+ISO="file://${ISO_REALPATH}"
 # NB: To set the default driver, use `minikube config set driver virtualbox` command.
 # Set LANG=en for VBoxManage, since VBoxManage output depends on system language
 # and minikube fails to parse translated output.
@@ -27,7 +33,9 @@ export LANG=en
 echo ">> Deleting old Minikube"
 ./minikube/out/minikube delete
 echo ">> Starting Minikube (iso: $ISO)"
-./minikube/out/minikube start --memory="8g" --cpus=4 --iso-url="${ISO}" --cni=cilium --container-runtime=porto --cache-images=false
+MEM=${MEM:-8g}
+CPU=${CPU:-4}
+./minikube/out/minikube start --memory="${MEM}" --cpus="${CPU}" --iso-url="${ISO}" --cni=cilium --container-runtime=porto --cache-images=false
 
 echo ">> Cert-Manager"
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
