@@ -26,4 +26,4 @@ kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheu
 ./operator.sh
 
 kubectl create ns yt
-kubectl apply -n yt -f "${SPEC:-yt.master-caches.yml}"
+kubectl apply -n yt -f "${SPEC:-yt.yml}"
