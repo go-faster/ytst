@@ -8,16 +8,20 @@ networking:
 nodes:
 - role: control-plane
 - role: worker
-  kubeadmConfigPatches:
-  - |
-    kind: JoinConfiguration
-    nodeRegistration:
-      kubeletExtraArgs:
-        node-labels: "ingress=true"
+  labels:
+    ingress: "true"
+    topology.ytsaurus.tech/rack: "first"
+    topology.ytsaurus.tech/dc: "alpha"
   extraPortMappings:
     - containerPort: 30000
       hostPort: 80
       listenAddress: 127.0.0.1
       protocol: TCP
 - role: worker
+  labels:
+    topology.ytsaurus.tech/rack: "second"
+    topology.ytsaurus.tech/dc: "alpha"
 - role: worker
+  labels:
+    topology.ytsaurus.tech/rack: "first"
+    topology.ytsaurus.tech/dc: "beta"

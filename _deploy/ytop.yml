@@ -1,0 +1,3 @@
+topologyPropagator:
+  enabled: true
+  labelRegex: 'topology.ytsaurus.tech/.+'
